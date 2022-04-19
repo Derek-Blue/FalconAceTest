@@ -35,7 +35,7 @@ class MainViewModel(
                 }.flatten()
 
                 _state.update {
-                    MainViewState(showItems = items)
+                    MainViewState(showItems = items, isLoading = false)
                 }
             }
         }

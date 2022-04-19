@@ -2,6 +2,7 @@ package com.farris.falconacetest.screen
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -41,14 +42,26 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private fun observerViewState() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.state
-                    .map { it.showItems }
-                    .distinctUntilChanged()
-                    .collectLatest { items ->
-                        if (items.isNotEmpty()) {
-                            newsAdapter.submitList(items)
+                launch {
+                    viewModel.state
+                        .map { it.showItems }
+                        .distinctUntilChanged()
+                        .collectLatest { items ->
+                            if (items.isNotEmpty()) {
+                                newsAdapter.submitList(items)
+                            }
                         }
-                    }
+                }
+
+                launch {
+                    viewModel.state
+                        .map { it.isLoading }
+                        .distinctUntilChanged()
+                        .collectLatest { isLoading ->
+                            binding.progressBar.isVisible = isLoading
+                        }
+                }
+
             }
         }
     }

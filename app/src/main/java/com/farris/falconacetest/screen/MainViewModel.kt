@@ -2,15 +2,14 @@ package com.farris.falconacetest.screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.farris.falconacetest.repository.GetNewsRepository
-import com.farris.falconacetest.repository.RepositoryItem
+import com.farris.falconacetest.usecase.GetNewsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class MainViewModel(
-    private val newsRepository: GetNewsRepository
+    private val newsUseCase: GetNewsUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(MainViewState())
@@ -18,27 +17,22 @@ class MainViewModel(
 
     init {
         viewModelScope.launch {
-            newsRepository().getOrNull()?.let { repository ->
-                val items = repository.map {
-                    when (it) {
-                        is RepositoryItem.Divider -> {
-                            NewsItem.Divider(it.categoryName)
-                        }
-                        is RepositoryItem.News -> {
-                            NewsItem.News(
-                                it.source,
-                                it.ref,
-                                it.mainTitle,
-                                it.subTitle,
-                                it.thumbnail,
-                                it.subscript,
-                                it.created,
-                                it.description,
-                                it.category
-                            )
-                        }
+            newsUseCase().getOrNull()?.let { useCaseMap ->
+                val items = useCaseMap.map {
+                    listOf(NewsItem.Divider(it.key)) + it.value.map { data ->
+                        NewsItem.News(
+                            data.source,
+                            data.ref,
+                            data.mainTitle,
+                            data.subTitle,
+                            data.thumbnail,
+                            data.subscript,
+                            data.createdTime,
+                            data.description,
+                            data.section
+                        )
                     }
-                }
+                }.flatten()
 
                 _state.update {
                     MainViewState(showItems = items)

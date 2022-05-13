@@ -1,12 +1,9 @@
 package com.farris.falconacetest
 
 import android.app.Application
-import com.farris.falconacetest.di.appModule
-import com.farris.falconacetest.di.modelModule
-import com.farris.falconacetest.di.viewModelModule
-import org.koin.android.ext.koin.androidContext
-import org.koin.core.context.startKoin
+import dagger.hilt.android.HiltAndroidApp
 
+@HiltAndroidApp
 class MyApplication : Application() {
 
     companion object {
@@ -17,15 +14,5 @@ class MyApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
-        startKoin {
-            androidContext(this@MyApplication)
-            modules(
-                listOf(
-                    appModule,
-                    modelModule,
-                    viewModelModule
-                )
-            )
-        }
     }
 }

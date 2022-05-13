@@ -1,26 +1,32 @@
 package com.farris.falconacetest.screen
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.farris.falconacetest.R
 import com.farris.falconacetest.databinding.ActivityMainBinding
 import com.farris.falconacetest.screen.adapter.NewsAdapter
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     private lateinit var binding: ActivityMainBinding
 
-    private val viewModel by viewModel<MainViewModel>()
+    @Inject
+    lateinit var viewModelAssistedFactory: MainViewModel.Companion.MainViewModelAssistedFactory
+
+    private val viewModel: MainViewModel by viewModels {
+        MainViewModel.provideFactory(viewModelAssistedFactory, 8888)
+    }
 
     private val newsAdapter by lazy {
         NewsAdapter()

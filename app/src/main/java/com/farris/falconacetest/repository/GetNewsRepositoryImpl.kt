@@ -8,8 +8,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
-class GetNewsRepositoryImpl(
+class GetNewsRepositoryImpl @Inject constructor(
     private val newsService: NewsService
 ) : GetNewsRepository {
 

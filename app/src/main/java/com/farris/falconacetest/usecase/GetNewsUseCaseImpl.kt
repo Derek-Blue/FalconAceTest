@@ -1,8 +1,9 @@
 package com.farris.falconacetest.usecase
 
 import com.farris.falconacetest.repository.GetNewsRepository
+import javax.inject.Inject
 
-class GetNewsUseCaseImpl(
+class GetNewsUseCaseImpl @Inject constructor(
     private val repository: GetNewsRepository
 ) : GetNewsUseCase {
 
